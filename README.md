@@ -1,11 +1,11 @@
 # ansible-sample
 
-Pythonで実装された構成管理ツール    
+ansibleはPythonで実装された構成管理ツール    
 Ansible社が開発(2015/10/16 Red Hat社が回収発表)    
-SSHでホストに接続してスクリプトを実行するシンプルな形式    
-ホスト側にClientが不要。    
+SSHでホストに接続してスクリプトを実行するシンプルな形式でホスト側にClientが不要。    
+本 ansible-sampleではansibleの基本的な使い方を説明しています。
 
-## ファイル構成
+## ansibleのファイル構成
 | 名称        | 説明           |参考URL|
 | ------------- |:-------------:|:------------|
 | Playbook      | 構築処理を定義するもの。YAML形式,単純なコマンド実行であれば無くても利用可能|[Playbooks][1]|
@@ -248,3 +248,5 @@ $ ls roles
 [5]: http://docs.ansible.com/ansible/playbooks_variables.html#information-discovered-from-systems-facts
 [6]: https://galaxy.ansible.com
 [8]: http://docs.ansible.com/ansible/playbooks_best_practices.html "link title Playbook Best Practices"
+
+# 本サンプルの説明
