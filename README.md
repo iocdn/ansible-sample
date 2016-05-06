@@ -5,12 +5,70 @@ Ansible社が開発(2015/10/16 Red Hat社が回収発表)
 SSHでホストに接続してスクリプトを実行するシンプルな形式でホスト側にClientが不要。    
 本 ansible-sampleではansibleの基本的な使い方を説明しています。
 
+# 本サンプルについて
+- 本サンプルのファイル郡を参照することでansibleのPlaybookに関する基本的な使い方を一通り把握できるようになっています(多分）
+- 本サンプルの実行方法
+ - ローカルホストにansibleをインストールしてください。
+```
+# mac
+ # brew install ansible
+
+# CentOS (EPEL repoのインストールが必要です)
+ # yum install ansible
+
+# windows
+ TODO
+```
+ - セットアップを行う適当なホストを用意してください。 (CentOS 6.x を想定しています。)
+ - 該当ホストにsshで公開鍵認証でログイン出来るようにしsample.ini のvm1 を修正してください
+```
+ vm1 ansible_host=ホストのIP　or ドメイン 
+ or 
+ vm1 ansible_host=ホストIP or ドメイン ansible_user=ログインユーザ ansible_private_key=秘密鍵のパス
+```
+ - 実行1
+```
+ $ cd ansible-sample
+ $ ansible-playbook -i sample.ini sample.yml -l development
+ Vault password: 秘密
+``` 
+  - 次の処理をします。(用語等は 下記で説明します。)
+   - Factで収集したホストのipv4アドレスの1つめをデバック出力
+   - osが RedHat系の場合はEcho出力
+   - group_vers/development(暗号化されています)に定義した変数arg1の値をデバック出力
+```
+ - 実行2
+```
+  $ cd ansible-sample
+  $ ansible-playbook -i sample.ini sample.yml -l vm1
+  Vault password: 秘密
+```
+  - 次の処理をします。(用語等は 下記で説明します。)
+   - rolesで定義されたPlaybookを実行します。
+    - elasticsearch , kibana, td-agentをインストールします。
+   - apacheのインストールをします。
+  - 正常に処理が完了したらapache にアクセスしてみましょう
+```
+ $ curl http://ホストのIP or ドメイン/
+``` 
+  - アクセスログが fluentd 経由で elasticsearchに格納され, kibanaで可視化されています。
+  - ブラウザからkibanaにアクセスしてみましょう 
+```
+  ブラウザで次を実行
+  $ curl http://ホストのIP or ドメイン:5601/
+   * kibanaは初回ログイン時にindexを作る必要があります。
+     topページでindexの作成を促されますので、そのまま確定ボタンを押下してください。
+     次に,Discoverタグを開いてください。アクセス数のCountグラフが表示されます。
+```
+
+# 以下でansibleの基本的な使い方を解説します。 
+
 ## ansibleのファイル構成
 | 名称        | 説明           |参考URL|
 | ------------- |:-------------:|:------------|
 | Playbook      | 構築処理を定義するもの。YAML形式,単純なコマンド実行であれば無くても利用可能|[Playbooks][1]|
 | インベントリ  | 構築対象ホストを定義するもの。INI形式|[Inventory][2]|
-| ansible.cfg   | 設定ファイル|[Configuration file][3]|
+| ansible.cfg   | ansibleの実行を制御する設定ファイル|[Configuration file][3]|
 
 # インベントリ サンプル
 
@@ -249,4 +307,3 @@ $ ls roles
 [6]: https://galaxy.ansible.com
 [8]: http://docs.ansible.com/ansible/playbooks_best_practices.html "link title Playbook Best Practices"
 
-# 本サンプルの説明
