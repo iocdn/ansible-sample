@@ -155,6 +155,10 @@ vm1 | success >> {
   become: true        # 実行ユーザを切り替える (task毎に上書き可)
   become_user: root   # 実行ユーザ(省略するとroot)
   become_method: sudo # ユーザの切替方法(デフォルトsudo)
+    roles:             # roleの実行(roleについては後述)    
+     - elasticsearch 
+     - kibana 
+     - td-agent 
   tasks:             # 実行タスクリスト(上から順に実行される)
   - name: Install Apache          # 実行タスク名
     yum: name=httpd state=latest  # yum モジュールを使って httpd を最新版までupdate
