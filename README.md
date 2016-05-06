@@ -36,8 +36,9 @@ SSHでホストに接続してスクリプトを実行するシンプルな形�
    - Factで収集したホストのipv4アドレスの1つめをデバック出力
    - osが RedHat系の場合はEcho出力
    - group_vers/development(暗号化されています)に定義した変数arg1の値をデバック出力
-```
- - 実行2
+
+- 実行2
+ 
 ```
   $ cd ansible-sample
   $ ansible-playbook -i sample.ini sample.yml -l vm1
