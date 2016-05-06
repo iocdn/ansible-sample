@@ -1,0 +1,24 @@
+---
+- name: install java
+  yum: name=java state=latest
+  tags:
+   - elasticsearch-util
+
+- name: rpm repo
+  copy: src=etc/yum.repos.d/elasticsearch.repo dest=/etc/yum.repos.d/elasticsearch.repo
+  tags:
+   - elasticsearch
+
+- name: install elasticsearch
+  yum: name=elasticsearch
+  tags:
+   - elasticsearch
+
+
+- name: boot elasticsearch 
+  service:
+   name: elasticsearch
+   state: started
+   enabled: yes
+  tags:
+   - elasticsearch-boot

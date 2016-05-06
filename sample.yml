@@ -1,0 +1,45 @@
+---
+- hosts: vm1
+  become: true
+  become_user: root
+  roles:
+   - elasticsearch
+   - kibana
+  tasks:
+   - debug: var=ansible_all_ipv4_addresses
+   - name: Echo
+     shell: echo {{ ansible_all_ipv4_addresses[0] }} > /var/tmp/hoge
+     when: "'development' in group_names and ansible_os_family == 'RedHat'"
+     become: false
+   - name: Install libselinux-python
+     yum: name=libselinux-python state=installed
+     tags: 
+       - debug
+   - name: Disable SELinux
+     selinux: state=disabled
+     tags: 
+       - debug
+   - name: Copy Test
+     copy: src=./files/tmp/test.txt dest=/tmp/test.txt.check owner=root group=root mode=0644
+     become: true
+     tags: 
+       - debug
+   - name: Install Apache
+     yum: name=httpd state=latest
+     sudo: yes
+     notify: Boot Apache
+     tags: 
+       - httpd
+   - name: Check Httpd Version
+     shell: rpm -qa |awk '/^httpd-[0123]/{print gensub(/^httpd-([0-9]\.[0-9]).*/,"\\1",$0)}'
+     register: httpd_version
+     failed_when: "httpd_version.stdout in [2.1,2.2]"
+     tags: 
+       - httpd-check
+  handlers:
+   - name: Boot Apache
+     service: >
+      name=httpd
+      state=started
+      enabled=yes
+      sudo: yes

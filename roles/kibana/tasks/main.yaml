@@ -1,0 +1,16 @@
+---
+- name: download kibana
+  get_url: url="{{ kibana.download_url}}" dest=/tmp/kibana.tar.gz
+  tags:
+   - kibana
+
+- name: install kibane
+  unarchive: src=/tmp/kibana.tar.gz dest=/usr/local/ copy=no
+  tags:
+   - kibana
+
+#  ver2.0 から?
+#- name: install kibane
+#  unarchive: src={{ kibana.download_url}} dest=/usr/local/kibana copy=no
+#  tags:
+#   - kibana2
