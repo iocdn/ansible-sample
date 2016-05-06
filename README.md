@@ -71,7 +71,7 @@ SSHでホストに接続してスクリプトを実行するシンプルな形�
 | インベントリ  | 構築対象ホストを定義するもの。INI形式|[Inventory][2]|
 | ansible.cfg   | ansibleの実行を制御する設定ファイル|[Configuration file][3]|
 
-# インベントリ サンプル
+## インベントリ サンプル
 
 ```
 vm1 ansible_ssh_host=104.197.59.209  # 構築対象のホストの定義, vm1 は別名
@@ -83,7 +83,7 @@ vm1
 vm[1:3]       # vm1 vm2 vm3 と同意
 ```
 
-- インベントリのホストに対してタスク(モジュール)を実行するコマンド
+## インベントリのホストに対してタスク(モジュール)を実行するコマンド
 - [Ad-Hoc Command][4] 参照
 - 以下の様なコマンドがある
  - インベントリに定義されたホスト一覧の取得
@@ -142,11 +142,11 @@ vm1 | success >> {
  - モジュールで 変数 (例: {{ ansible_all_ipv4_addresses[0] }}) として利用可能
   -  また、確認用に debug: var=ansible_all_ipv4_addresses でFactsの変数を標準出力できます。
 
-# Playbook
+## Playbook
 - インベントリで定義したホストに対して実行するタスクを記述するファイル
 - YAML 形式
 
-## Playbook のサンプル
+### Playbook のサンプル
 
 ```
 ---
@@ -168,7 +168,7 @@ vm1 | success >> {
       sudo: yes
 ```
 
-## roles
+### roles
 - 詳細は[Best Practive][8] 参照
 - カレントディレクトリ直下のrolesディレクトリに,以下の構成でPlaybookを配置することで、Playbookを分割管理できる。
 
