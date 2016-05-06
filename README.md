@@ -6,10 +6,11 @@ SSHでホストに接続してスクリプトを実行するシンプルな形�
 ホスト側にClientが不要。    
 
 ## ファイル構成
-| 名称        | 説明           |
-| ------------- |:-------------:|
-| Playbook      | 構築処理を定義するもの。YAML形式,単純なコマンド実行であれば無くても利用可能|
-|インベントリ   | 構築対象ホストを定義するもの。INI形式|
+| 名称        | 説明           |参考URL|
+| ------------- |:-------------:|:------------|
+| Playbook      | 構築処理を定義するもの。YAML形式,単純なコマンド実行であれば無くても利用可能|[Playbooks][1]|
+| インベントリ  | 構築対象ホストを定義するもの。INI形式|[Inventory][2]|
+| ansible.cfg   | 設定ファイル|[Configuration file][3]|
 
 # インベントリ サンプル
 
@@ -23,8 +24,8 @@ vm1
 vm[1:3]       # vm1 vm2 vm3 と同意
 ```
 
-# ansible コマンド
 - インベントリのホストに対してタスク(モジュール)を実行するコマンド
+- [Ad-Hoc Command][4] 参照
 - 以下の様なコマンドがある
  
 ## インベントリに定義されたホスト一覧の取得
@@ -65,6 +66,7 @@ vm1 | success >> {
 
 ## Facts
 - ホスト情報の自動収集機能
+- [Information discovered from systems: Facts][5] 参照
 - 以下で取得できる情報は, モジュールや後述するPlaybookで利用可能
 ```
 $ ansible vm1 -i sample.ini -m setup
@@ -85,7 +87,6 @@ vm1 | success >> {
 # Playbook
 - インベントリで定義したホストに対して実行するタスクを記述するファイル
 - YAML 形式
-
 
 ## Playbook のサンプル
 
@@ -110,13 +111,37 @@ vm1 | success >> {
 ```
 
 ## roles
-- 
-- [Best Practive][1] 参照
-[1]: http://docs.ansible.com/ansible/playbooks_best_practices.html "link title Playbook Best Practices"
+- 詳細は[Best Practive][8] 参照
+- カレントディレクトリ直下のrolesディレクトリに,以下の構成でPlaybookを配置することで、Playbookを分割管理できる。
+
+```
+roles/
+└── elasticsearch
+   ├── defaults       # 変数のデフォルト値
+   │   └── main.yaml
+   ├── files          # 設定ファイル置き場
+   │   └── etc
+   │       └── yum.repos.d
+   │           └── elasticsearch.repo
+   ├── handlers      # ハンドラ(taskからnotifyで呼ばれるタスク)
+   │   └── main.yaml
+   ├── meta          # メタデータ(依存ロールなどを記載するらしい)
+   │   └── main.yaml
+   ├── tasks         # タスク
+   │   └── main.yaml
+   ├── templates     # テンプレート置き場
+   │   └── etc
+   │       └── httpd
+   │           └── httpd.conf.j2
+   └── vars          # 変数
+       └── main.yaml
+```
 
 ## Playbookの実行
- - ansible-playbook -i sample.ini sample.yml [--tags "xxx,xxx"]
+ - ansible-playbook -i sample.ini sample.yml [--tags "xxx,xxx"] [-l SUBSET]
+ - 詳細は ansible-playbook -h 参照 
  - tagsを指定すると,該当タグが設定されたタスクのみを実行します。 詳細はsample.ymlをご参照ください。
+ - l オプションは実行するplaybookのhostを指定する。
  
 ```
 $ ansible-playbook -i sample.ini sample.yml --tags "debug"
@@ -175,3 +200,50 @@ vm1                        : ok=2    changed=1    unreachable=0    failed=1
  - "-v" 詳細表示
  - "-vvv" さらに詳細表示
 
+# その他
+## 変数ファイルの暗号化
+- ansible-vaultコマンドで暗号化する。
+ - インベントリは無効
+- 以下のコマンドで暗号/復号化を行う。
+
+```
+ $ ansible-vault encrypt ファイル名  # 暗号化, ファイル名はワイルドカード使用可
+ Vault password:
+
+ $ ansible-vault decrypt ファイル名 # 復号化
+ Vault password:
+ 
+```
+
+- 暗号化したまま実行する場合は --ask-vault-passを付けてPlaybookを実行する。
+- "--vault-password-file パスワードファイル" でパスワード入力プロンプトの表示無しで利用できる。
+
+## サードパーティのroleを使う
+- ansible-galaraxy コマンドで取得できる
+- 詳細は[Ansible Galaxy][6] 参照
+```
+$ ansible-galaxy install bennojoy.mysql
+$ ls roles
+ bennojoy.mysql
+
+## Ansible2 の変数の優先順位(上から順に優先)
+1. ansible-playbookコマンドの -e オプションで指定した変数
+2. task内のvarsの定義
+3. include時に定義した変数
+4. ブロック内のvarsによる定義? 
+5. vars_fileによる定義
+6. vars による定義
+7. Facts
+8. host_vars(ディレクトリ)による定義
+9. host_vars(インベントリ内)による定義
+10. group_vars(ディレクトリ)による定義
+11. group_vars(インベントリ内)による定義
+12. roleのdefaultsでの定義
+
+[1]: http://docs.ansible.com/ansible/playbooks.html
+[2]: http://docs.ansible.com/ansible/intro_inventory.html
+[3]: http://docs.ansible.com/ansible/intro_configuration.html
+[4]: http://docs.ansible.com/ansible/intro_adhoc.html
+[5]: http://docs.ansible.com/ansible/playbooks_variables.html#information-discovered-from-systems-facts
+[6]: https://galaxy.ansible.com
+[8]: http://docs.ansible.com/ansible/playbooks_best_practices.html "link title Playbook Best Practices"

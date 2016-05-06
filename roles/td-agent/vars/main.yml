@@ -1,0 +1,10 @@
+---
+td_agent:
+  rpms:
+   - { name: 'td-agent', state: 'latest' }
+  plugins:
+    - { name: 'fluent-plugin-elasticsearch' }
+  position_path: /var/log/td-agent/position
+  aggregator:
+    ipaddr: 127.0.0.1
+    port: 24224

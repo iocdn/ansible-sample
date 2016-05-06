@@ -9,6 +9,33 @@
   tags:
    - kibana
 
+- name: kibane_path
+  command: "find /usr/local -maxdepth 1 -type d -name 'kibana*'"
+  register: kibana_find_ret
+  failed_when: "kibana_find_ret.rc != 0 or kibana_find_ret.stdout_lines == [] "
+  tags: 
+   - kibana2
+
+- name: symlink kibana real path  to /usr/local/kibane
+  file: >
+    src={{ kibana_find_ret.stdout }}
+    dest=/usr/local/kibana
+    state=link
+  tags: 
+   - kibana2
+    
+- name: setup kibana init script
+  copy: >
+   src=etc/init.d/kibana
+   dest=/etc/init.d/kibana
+   owner=root
+   group=root
+   mode=755
+  notify: restart kibana
+  tags: 
+   - kibana2
+
+
 #  ver2.0 から?
 #- name: install kibane
 #  unarchive: src={{ kibana.download_url}} dest=/usr/local/kibana copy=no

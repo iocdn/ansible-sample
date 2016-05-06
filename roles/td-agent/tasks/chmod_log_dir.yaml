@@ -1,0 +1,9 @@
+---
+- name: chmod_777_apache_log_dir
+  file: >
+   path=/var/log/httpd
+   mode=777
+   state=directory
+  tags:
+   - apache
+   - td-agent

@@ -1,0 +1,53 @@
+---
+- name: rpm repo
+  copy: src=etc/yum.repos.d/td-agent.repo dest=/etc/yum.repos.d/td-agent.repo
+  tags:
+   - td-agent
+
+- name: install td-agent
+  yum: name={{ item.name }} state={{ item.state }}
+  with_items: "{{ td_agent.rpms }}"
+  tags:
+   - td-agent
+
+- name: service td-agent
+  service: name=td-agent state=started enabled=yes
+  tags:
+   - td-agent
+
+- name: Check plugins
+  command: "td-agent-gem list --local {{ item.name }}"
+  with_items: "{{ td_agent.plugins }}"
+  changed_when: False
+  failed_when: False
+  register: plugin_status
+  tags:
+   - td-agent
+
+- name: Install plugins
+  command: "td-agent-gem install {{ item.item.name }}"
+  with_items: plugin_status.results
+  when: plugin_status.results is defined and item.stdout[0] is undefined
+  tags:
+   - td-agent
+
+- name: td-agent template copy
+  template: >
+    src=etc/td-agent/td-agent.conf
+    dest=/etc/td-agent/td-agent.conf
+    backup=yes
+  notify: restart td-agent
+  tags:
+   - td-agent
+
+- name: create temp directory use posision
+  file: >
+    path={{ td_agent.position_path }}
+    state=directory
+    owner=td-agent
+    group=td-agent
+    mode=755
+  tags:
+   - td-agent
+
+- include: chmod_log_dir.yaml tags=apache
