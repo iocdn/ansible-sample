@@ -285,7 +285,7 @@ vm1                        : ok=2    changed=1    unreachable=0    failed=1
 - ansible-galaraxy コマンドで取得できる
 - 詳細は[Ansible Galaxy][6] 参照
 ```
-$ ansible-galaxy install bennojoy.mysql
+$ ansible-galaxy install bennojoy.mysql -p ansible-sample/roles
 $ ls roles
  bennojoy.mysql
 ```
