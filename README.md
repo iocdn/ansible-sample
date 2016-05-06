@@ -85,8 +85,7 @@ vm1 | success >> {
 # Playbook
 - インベントリで定義したホストに対して実行するタスクを記述するファイル
 - YAML 形式
-- [Best Practive][1] 参照
-[1]: http://docs.ansible.com/ansible/playbooks_best_practices.html "link title Playbook Best Practices"
+
 
 ## Playbook のサンプル
 
@@ -109,6 +108,34 @@ vm1 | success >> {
       enabled=yes
       sudo: yes
 ```
+
+## roles
+- 
+- [Best Practive][1] 参照
+[1]: http://docs.ansible.com/ansible/playbooks_best_practices.html "link title Playbook Best Practices"
+
+## Playbookの実行
+ - ansible-playbook -i sample.ini sample.yml [--tags "xxx,xxx"]
+ - tagsを指定すると,該当タグが設定されたタスクのみを実行します。 詳細はsample.ymlをご参照ください。
+ 
+```
+$ ansible-playbook -i sample.ini sample.yml --tags "debug"
+PLAY [vm1] ********************************************************************   <= タスク開始
+GATHERING FACTS ***************************************************************   <= 設定対象のサーバの情報収集 
+ok: [vm1]
+
+TASK: [Install libselinux-python] *********************************************   <= タスク実行
+ok: [vm1]
+
+TASK: [Disable SELinux] *******************************************************   <= 〃
+changed: [vm1]
+.....
+....
+PLAY RECAP ********************************************************************
+vm1                        : ok=3    changed=1    unreachable=0    failed=0       <= 実行結果 
+                            # taskが3つ成功, そのうちホストに変更を加えたのが1つ。ホストへ接続不可0 失敗 0
+```
+ 
 
 ## Playbook のデバック
 - syntax check
@@ -145,6 +172,6 @@ PLAY RECAP ********************************************************************
 vm1                        : ok=2    changed=1    unreachable=0    failed=1
 ```
 - その他 デバックに役立つ ansible-playbookコマンドのオプション
-- -vvv 詳細表示
-- 
+ - "-v" 詳細表示
+ - "-vvv" さらに詳細表示
 
