@@ -225,8 +225,10 @@ vm1                        : ok=2    changed=1    unreachable=0    failed=1
 $ ansible-galaxy install bennojoy.mysql
 $ ls roles
  bennojoy.mysql
+```
 
 ## Ansible2 の変数の優先順位(上から順に優先)
+
 1. ansible-playbookコマンドの -e オプションで指定した変数
 2. task内のvarsの定義
 3. include時に定義した変数
