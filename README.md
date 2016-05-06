@@ -27,9 +27,8 @@ vm[1:3]       # vm1 vm2 vm3 と同意
 - インベントリのホストに対してタスク(モジュール)を実行するコマンド
 - [Ad-Hoc Command][4] 参照
 - 以下の様なコマンドがある
- 
-## インベントリに定義されたホスト一覧の取得
-- ansible -i インベントリ [ホストグループ] --list-hosts
+ - インベントリに定義されたホスト一覧の取得
+  - _書式:_  ansible -i インベントリ [ホストグループ] --list-hosts
 ```
 $ ansible -i sample.ini web --list-hosts
     vm1
@@ -39,9 +38,9 @@ $ ansible -i sample.ini development --list-hosts
     vm1
 ```
 
-## タスク実行(ansible モジュールの利用)
-- リモートホストでシェル実行
--- ansible -i sample.ini [ホストグループ] -m shell -a シェルコマンド
+ - タスク実行(ansible モジュールの利用)
+  - リモートホストでシェル実行
+   - _書式:_  ansible -i インベントリ [ホストグループ] -m shell -a シェルコマンド
 
 ```
 $ ansible -i sample.ini development -m shell -a uname 
@@ -49,8 +48,8 @@ vm1 | success | rc=0 >>
 Linux
 ```
 
--- リモートホストでyum install 
-
+  - リモートホストでyum install 
+   - _書式:_  ansible -i インベントリ [ホストグループ] -m yum -a "name=パッケージ名 state=バージョンなど"
 ```
 $ ansible -i sample.ini development -m yum -a 'name=openssl state=latest'
 vm1 | success >> {
@@ -81,8 +80,8 @@ vm1 | success >> {
         "ansible_architecture": "x86_64",
 ```
 
--- モジュールでで 変数 (例: {{ ansible_all_ipv4_addresses[0] }}) として利用可能
----  また、確認用に debug: var=ansible_all_ipv4_addresses でFactsの変数を標準出力できます。
+ - モジュールで 変数 (例: {{ ansible_all_ipv4_addresses[0] }}) として利用可能
+  -  また、確認用に debug: var=ansible_all_ipv4_addresses でFactsの変数を標準出力できます。
 
 # Playbook
 - インベントリで定義したホストに対して実行するタスクを記述するファイル
