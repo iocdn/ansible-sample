@@ -86,8 +86,9 @@ vm[1:3]       # vm1 vm2 vm3 と同意
 ## インベントリのホストに対してタスク(モジュール)を実行するコマンド
 - [Ad-Hoc Command][4] 参照
 - 以下の様なコマンドがある
- - インベントリに定義されたホスト一覧の取得
-  - _書式:_  ansible -i インベントリ [ホストグループ] --list-hosts
+
+- インベントリに定義されたホスト一覧の取得
+ - _書式:_  ansible -i インベントリ [ホストグループ] --list-hosts
 ```
 $ ansible -i sample.ini web --list-hosts
     vm1
