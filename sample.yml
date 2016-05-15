@@ -22,9 +22,9 @@
   become: true
   become_user: root
   roles:
+   - disable-selinux
    - iocdn.httpd
    - iocdn.wordpress
-   - disable-selinux
    - elasticsearch
    - kibana
    - td-agent

@@ -1,5 +1,5 @@
 ---
-# epelm remi のダウンロード && インストール
+# epel remi のダウンロード && インストール
 - name: install rpm repos
   yum: name={{ item.name }} state={{ item.state }}
   with_items: "{{ iocdn_wordpress.rpm_repos }}"
