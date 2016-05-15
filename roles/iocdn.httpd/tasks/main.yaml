@@ -1,0 +1,15 @@
+---
+- name: Install Apache
+  yum: name=httpd state=latest
+  sudo: yes
+  notify: Boot Apache
+  tags: 
+    - httpd
+
+- name: Check Httpd Version
+  shell: rpm -qa |awk '/^httpd-[0123]/{print gensub(/^httpd-([0-9]\.[0-9]).*/,"\\1",$0)}'
+  register: httpd_version
+  failed_when: "httpd_version.stdout in [2.1,2.2]"
+  tags: 
+    - httpd
+    - httpd-check

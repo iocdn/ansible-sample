@@ -1,0 +1,3 @@
+---
+- name: Boot Apache
+  service: name=httpd state=restarted
