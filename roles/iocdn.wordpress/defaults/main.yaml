@@ -1,0 +1,19 @@
+---
+wordpress_mysql:
+  host: 'localhost'
+  db_name: 'wordpress'
+  user: 'user01'
+  password: 'fugafuga'
+iocdn_wordpress:
+  fqdn: example.com
+  rpm_repos:
+    - { name: 'http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm', state: 'present' }
+    - { name: 'http://rpms.famillecollet.com/enterprise/remi-release-6.rpm', state: 'present' }
+  rpms:
+    - { name: 'php' , enablerepo: 'remi' , state: 'present' }
+    - { name: 'php-mbstring' , enablerepo: 'remi' , state: 'present' }
+    - { name: 'php-mysql' , enablerepo: 'remi' , state: 'present' }
+  download_url: https://ja.wordpress.org/wordpress-4.5.2-ja.tar.gz
+  expand_root: /var/www/html
+    
+

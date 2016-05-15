@@ -23,6 +23,7 @@
   become_user: root
   roles:
    - iocdn.httpd
+   - iocdn.wordpress
    - disable-selinux
    - elasticsearch
    - kibana

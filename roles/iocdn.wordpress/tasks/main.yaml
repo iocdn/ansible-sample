@@ -1,0 +1,52 @@
+---
+# epelm remi のダウンロード && インストール
+- name: install rpm repos
+  yum: name={{ item.name }} state={{ item.state }}
+  with_items: "{{ iocdn_wordpress.rpm_repos }}"
+  tags:
+   - wordpress
+
+# php php-mbstring php-mysql yum remi からインストール
+- name: install rpms
+  yum: name={{ item.name }} enablerepo={{ item.enablerepo }} state={{ item.state }}
+  with_items: "{{ iocdn_wordpress.rpms }}"
+  tags:
+   - wordpress
+
+# /etc/php.iniの修正
+- name: check php.ini
+  command: sudo sed -i.bk -e 's#;date.timezone.*#date.timezone = "Asia/Tokyo"#;s/;mbstring.language\s*=\s*Japanese/mbstring.language = Japanese/' /etc/php.ini
+  args: 
+    chdir: /etc
+  tags:
+   - wordpress
+
+## wordpressを /var/www/html/ に展開
+- name: download wordpress
+  get_url: url="{{ iocdn_wordpress.download_url }}" dest=/tmp/wordpress.tar.gz
+  tags:
+   - wordpress
+
+- name: copy wordpress to /var/www/html
+  unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/html/ copy=no
+  tags:
+   - wordpress
+
+## /var/www/html/wordpress/wp-config-sample.php  を書き換えて wp-config に修正
+- name: create wp-config.php
+  shell: sed "s/define('DB_NAME',.*)/define('DB_NAME', '"{{ wordpress_mysql.db_name }}"' )/;s/define('DB_USER',.*)/define('DB_USER', '"{{ wordpress_mysql.user }}"')/;s/define('DB_PASSWORD',.*)/define('DB_PASSWORD', '"{{ wordpress_mysql.password }}"')/" /var/www/html/wordpress/wp-config-sample.php > wp-config.php
+  args:
+    chdir: /var/www/html/wordpress
+  tags:
+   - wordpress
+
+## /etc/httpd/conf.d/wordpress.conf の作成
+- name: wordpress.conf template
+  template: >
+    src=etc/httpd/conf.d/wordpress.conf
+    dest=/etc/httpd/conf.d/wordpress.conf
+    backup=yes
+    notify: graceful httpd
+  tags:
+   - wordpress
+

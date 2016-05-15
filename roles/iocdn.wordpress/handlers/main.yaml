@@ -1,0 +1,5 @@
+---
+- name: graceful httpd
+  service: name=httpd state=restart
+  tags:
+   - wordpress
