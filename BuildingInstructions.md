@@ -67,16 +67,61 @@
   Remove test database and access to it? [Y/n] Y 
   Reload privilege tables now? [Y/n] Y
 ```
+
 ### mysql設定
+```shell-session
+ # mysql -uroot -e 'create database wordpress'
+ # mysql -uroot -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'user01'@'localhost' IDENTIFIED BY  'ユーザパスワード';"
+```
+
 ### wordpressのインストール
 #### remiリポジトリのインストール
-#### php_php-mbstring_php-mysqlのインストール
-#### phpiniの修正
-#### wordpressのダウンロードと展開
-#### wp-configの作成
-#### wordpress_confの作成
-#### 適用
+```shell-session
+# yum -y install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+# yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+```
 
+#### php_php-mbstring_php-mysqlのインストール
+```shell-session
+# yum -y install php php-mbstring php-mysql
+```
+
+#### phpiniの修正
+```shell-session
+sudo sed -i.bk -e 's#;date.timezone.*#date.timezone = "Asia/Tokyo"#;s/;mbstring.language\s*=\s*Japanese/mbstring.language = Japanese/' /etc/php.ini
+```
+#### wordpressのダウンロードと展開
+```shell-session
+# wget https://ja.wordpress.org/wordpress-4.5.2-ja.tar.gz -o /tmp/wordpress-4.5.2-ja.tar.gz
+# cd /var/www/html 
+# tar -zxvf /tmp/wordpress-4.5.2-ja.tar.gz
+```
+
+#### wp-configの作成
+```shell-session
+# sed "s/define('DB_NAME',.*)/define('DB_NAME', 'wordpress' )/;s/define('DB_USER',.*)/define('DB_USER', 'user01')/;s/define('DB_PASSWORD',.*)/define('DB_PASSWORD', 'ユーザ素ワード')/" /var/www/html/wordpress/wp-config-sample.php > wp-config.php
+```
+#### wordpress_confの作成
+```shell-session
+# vim /etc/httpd/conf.d/wordpress.conf
+以下の通り記載する
+<VirtualHost *:80>
+  DocumentRoot /var/www/html/wordpress
+  <Directory "/var/www/html/wordpress">
+    AllowOverride All
+    Options -Indexes
+  </Directory>
+
+  <Files wp-config.php>
+    order allow,deny
+    deny from all
+  </Files>
+</VirtualHost>
+```
+#### 適用
+```shell-session
+ # service httpd restart
+```
 ### elasticsearchのインストール
 #### open-jdkのインストール
 #### elasticsearchリポジトリの追加
