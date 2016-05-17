@@ -51,7 +51,7 @@
 ```shell-session
  # yum install httpd
  # chkconfig httpd on
- # service mysqld start
+ # service httpd start
 ```
 
 ### mysqlのインストール
