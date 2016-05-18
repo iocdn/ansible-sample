@@ -129,6 +129,8 @@ sudo sed -i.bk -e 's#;date.timezone.*#date.timezone = "Asia/Tokyo"#;s/;mbstring.
 ```
 #### elasticsearchリポジトリの追加
 ```shell-session
+# vim /etc/yum.repos.d/elasticsearch.repo
+以下を追記
 [elasticsearch-2.x]
 name=Elasticsearch repository for 2.x packages
 baseurl=https://packages.elastic.co/elasticsearch/2.x/centos
@@ -148,9 +150,33 @@ enabled=0
 ```
 ### td-agentのインストール
 #### td-agentリポジトリの追加
+```shell-session
+# vim /etc/yum.repos.d/td-agent.repo
+以下を追記
+[treasuredata]
+name=TreasureData
+baseurl=http://packages.treasuredata.com/2/redhat/\$releasever/\$basearch
+gpgcheck=1
+gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
+```
+
 #### td-agentのインストール
+```
+# yum -y --enablerepo td-agent install td-agent
+```
+
 #### fluent-plugin-elasticsearchのインストール
+```
+# td-agent-gem install fluent-plugin-elasticsearch
+```
+
 #### td-agent_confの作成
+```
+ # cp -vip /etc/td-agent/td-agent.conf /etc/td-agent/td-agent.conf.org
+ # vim /etc/td-agent/td-agent.conf
+ 次のように修正
+ 
+```
 #### ログポジション保存ディレクトリの作成
 #### apacheログディレクトリの権限変更
 #### td-agent再起動
