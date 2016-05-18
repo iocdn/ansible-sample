@@ -23,16 +23,16 @@
   become_user: root
   roles:
    - disable-selinux
-   - iocdn.httpd
-   - iocdn.wordpress
-   - elasticsearch
-   - kibana
-   - td-agent
    - {
        role: bennojoy.mysql, mysql_root_db_pass: "{{ mysql.root_pwd }}",
        mysql_db: [ {name: wordpress} ],
        mysql_users: [{name: user01, pass: "{{ mysql.user_pwd }}", priv: "*.*:ALL"}] 
      }
+   - iocdn.httpd
+   - iocdn.wordpress
+   - elasticsearch
+   - kibana
+   - td-agent
   tasks:
    - name: Copy Test
      copy: src=./files/tmp/test.txt dest=/tmp/test.txt.check owner=root group=root mode=0644
