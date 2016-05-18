@@ -161,24 +161,61 @@ gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 ```
 
 #### td-agentのインストール
-```
+```shell-session
 # yum -y --enablerepo td-agent install td-agent
+# chkconfig td-agent on
 ```
 
 #### fluent-plugin-elasticsearchのインストール
-```
+```shell-session
 # td-agent-gem install fluent-plugin-elasticsearch
 ```
 
 #### td-agent_confの作成
-```
+```shell-session
  # cp -vip /etc/td-agent/td-agent.conf /etc/td-agent/td-agent.conf.org
  # vim /etc/td-agent/td-agent.conf
  次のように修正
- 
+ <source>
+  type tail
+  path /var/log/httpd/access_log 
+  format apache2
+  pos_file /var/log/td-agent/position/apache_access.log.pos
+  tag apache.access
+</source>
+
+<match apache.access>
+  type copy
+  <store>
+    type elasticsearch
+    logstash_format true
+    hosts localhost:9200
+    type_name application-log
+    buffer_type memory
+    retry_limit 17
+    retry_wait 1.0
+    num_threads 1
+    flush_interval 60
+    retry_limit 17
+  </store>
+</match>
 ```
+
 #### ログポジション保存ディレクトリの作成
+```shell-session
+ # mkdir -p /var/log/td-agent/position
+ # chown td-agent:td-agent /var/log/td-agent/position
+ # chmod 755 /var/log/td-agent/position
+```
+
 #### apacheログディレクトリの権限変更
+```shell-session
+# chmod -R  777 /var/log/httpd
+```
+
 #### td-agent再起動
+```shell-session
+ # service td-agent start
+```
 ### kibanaのインストール
 ### 動作確認
