@@ -124,10 +124,28 @@ sudo sed -i.bk -e 's#;date.timezone.*#date.timezone = "Asia/Tokyo"#;s/;mbstring.
 ```
 ### elasticsearchのインストール
 #### open-jdkのインストール
+```shell-session
+ # yum -y install java
+```
 #### elasticsearchリポジトリの追加
+```shell-session
+[elasticsearch-2.x]
+name=Elasticsearch repository for 2.x packages
+baseurl=https://packages.elastic.co/elasticsearch/2.x/centos
+gpgcheck=1
+gpgkey=https://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=0
+```
 #### elasticsearchのインストール
-#### 起動
+```shell-session
+# yum -y --enablerepo elasticsearch install elasticsearch 
+#  # chkconfig elasticsearch on
+```
 
+#### 起動
+```shell-session
+# service elasticsearch start
+```
 ### td-agentのインストール
 #### td-agentリポジトリの追加
 #### td-agentのインストール
