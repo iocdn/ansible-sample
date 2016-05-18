@@ -217,5 +217,21 @@ gpgkey=https://packages.treasuredata.com/GPG-KEY-td-agent
 ```shell-session
  # service td-agent start
 ```
-### kibanaのインストール
-### 動作確認
+## kibanaのインストール
+### kibaraのインストール
+```shell-session
+ # wget https://download.elastic.co/kibana/kibana/kibana-4.5.0-linux-x64.tar.gz -o /tmp/kibana-4.5.0-linux-x64.tar.gz
+ # cd /usr/local
+ # tar -zxvf /tmp/kibana-4.5.0-linux-x64.tar.gz
+ # ln -snf kibana-4.5.0 kibana
+```
+### kibana initスクリプトの作成
+```sell-session
+ # wget https://raw.githubusercontent.com/iocdn/ansible-sample/master/roles/kibana/files/etc/init.d/kibana -o /etc/init.d/kibana
+ # chmod 755 /etc/init.d/kibana
+```
+
+### 起動
+```sell-session
+ # service kibana start
+```
